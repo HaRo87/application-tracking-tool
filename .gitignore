@@ -175,3 +175,6 @@ cython_debug/
 
 # PostgreSQL
 backend/psql_data
+
+# nohup
+nohup.out
