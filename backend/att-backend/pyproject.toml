@@ -1,0 +1,22 @@
+[project]
+name = "att-backend"
+version = "0.1.0"
+description = "Application Tracking Tool Backend"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115.12",
+    "pydantic>=2.11.3",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "ruff>=0.11.7",
+]
+
+[tool.black]
+line-length = 80
+target-version = ['py313']
+include = '\.pyi?$'
