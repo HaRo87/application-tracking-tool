@@ -36,6 +36,7 @@ tasks:
     desc: Run the FastAPI API
     cmds:
       - nohup uv run fastapi dev --host 127.0.0.1 --port 8000 ./src/main.py &
+      - sleep 5s
       - xdg-open http://127.0.0.1:8000/docs
   stop-api:
     desc: Stop the FastAPI API

@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 
+from src.foundation import META_DATA
+from src.routing.v1 import router as v1_router
+
 app = FastAPI(
     title="Application Tracking Tool",
-    version=0.1,
-    description="A tool which helps in tracking job applications.",
+    version=META_DATA.version,
+    description=META_DATA.description,
 )
 
-@app.get("/")
-def get_root():
-    """Root entry point"""
-    return {"Application Tracking Tool": "Welcome!"}
+app.include_router(v1_router, prefix="/v1")
