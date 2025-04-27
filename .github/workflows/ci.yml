@@ -9,6 +9,7 @@ on:
 defaults:
   run:
     shell: bash
+    working-directory: ./backend/att-backend
 
 env:
   LANG: "en_US.utf-8"
