@@ -18,6 +18,10 @@ tasks:
     desc: Run unit tests
     cmds:
       - uv run pytest -c pytest.ini --cov-fail-under 80 -m unit tests/
+  test-system:
+    desc: Run system tests
+    cmds:
+      - uv run python -m pytest -c pytest.ini -m system tests/
   test-all:
     desc: Run all tests
     cmds:
