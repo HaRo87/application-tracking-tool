@@ -56,4 +56,4 @@ jobs:
       run: task lint
 
     - name: Test
-      run: task test-system
+      run: task test-all

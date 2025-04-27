@@ -15,11 +15,13 @@ class MetaDataResponse(BaseModel):
         description="Name of the service.",
         examples=["My Awesome Service", "Application Tracking Tool"],
     )
-    url: HttpUrl = Field(
+    url: Optional[HttpUrl] = Field(
         description="A url pointing to the homepage of the service",
         examples=["https://my-awesome-service.com"],
+        default=None,
     )
     description: Optional[str] = Field(
         description="A short description",
         examples=["A service which is awesome"],
+        default=None,
     )
