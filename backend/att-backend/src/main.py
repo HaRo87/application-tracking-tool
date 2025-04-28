@@ -6,7 +6,7 @@ from src.routing.v1 import router as v1_router
 app = FastAPI(
     title="Application Tracking Tool",
     version=META_DATA.version,
-    description=META_DATA.description,
+    description=str(META_DATA.description),
 )
 
 app.include_router(v1_router, prefix="/v1")
