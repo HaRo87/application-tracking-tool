@@ -15,6 +15,7 @@ tasks:
       - uv run black --check src tests
       - uv run ruff check src tests
       - uv run mypy src
+      - uv run bandit -r src
   test-unit:
     desc: Run unit tests
     cmds:
