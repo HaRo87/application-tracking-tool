@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.115.12",
     "pydantic>=2.11.3",
+    "sqlalchemy>=2.0.40",
 ]
 
 [dependency-groups]
@@ -16,6 +17,7 @@ dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "ruff>=0.11.7",
+    "sqlalchemy[mypy]>=2.0.40",
     "uvicorn>=0.34.2",
 ]
 
@@ -23,3 +25,6 @@ dev = [
 line-length = 80
 target-version = ['py313']
 include = '\.pyi?$'
+
+[tool.mypy]
+plugins = "sqlalchemy.ext.mypy.plugin"
