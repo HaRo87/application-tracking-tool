@@ -1,9 +1,7 @@
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
-class CountryResponse(BaseModel):
+class CountryRequest(BaseModel):
     name: str = Field(
         min_length=1,
         description="Name of the country",
@@ -18,12 +16,16 @@ class CountryResponse(BaseModel):
     )
 
 
+class CountryResponse(CountryRequest):
+    id: int = Field(gt=0, description="The id of the country", examples=[1, 94])
+
+
 class CountriesResponse(BaseModel):
     count: int = Field(
         ge=0, description="Number of countries", examples=[10, 2]
     )
-    values: List[CountryResponse] = Field(
+    values: list[CountryResponse] = Field(
         min_length=0,
         description="List of countries",
-        examples=[[CountryResponse(name="Canada", code="CA")]],
+        examples=[[CountryResponse(id=1, name="Canada", code="CA")]],
     )

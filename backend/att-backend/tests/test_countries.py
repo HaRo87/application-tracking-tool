@@ -4,6 +4,7 @@ from pydantic import ValidationError
 
 from src.foundation.schemas import CountryResponse, CountriesResponse
 
+TEST_COUNTRY_ID = 1
 TEST_COUNTRY_NAME = "Canada"
 TEST_COUNTRY_CODE = "CA"
 
@@ -11,26 +12,33 @@ TEST_COUNTRY_CODE = "CA"
 @pytest.mark.unit
 def test_country_response_validation_error_on_invalid_data():
     with pytest.raises(ValidationError) as ve:
-        CountryResponse(name="", code=TEST_COUNTRY_CODE)
+        CountryResponse(id=0, name=TEST_COUNTRY_NAME, code=TEST_COUNTRY_CODE)
+    assert "1 validation error for CountryResponse" in str(ve.value)
+    assert "id" in str(ve.value)
+    with pytest.raises(ValidationError) as ve:
+        CountryResponse(id=TEST_COUNTRY_ID, name="", code=TEST_COUNTRY_CODE)
     assert "1 validation error for CountryResponse" in str(ve.value)
     assert "name" in str(ve.value)
     with pytest.raises(ValidationError) as ve:
-        CountryResponse(name=TEST_COUNTRY_NAME, code="")
+        CountryResponse(id=TEST_COUNTRY_ID, name=TEST_COUNTRY_NAME, code="")
     assert "1 validation error for CountryResponse" in str(ve.value)
     assert "code" in str(ve.value)
     with pytest.raises(ValidationError) as ve:
-        CountryResponse(name=TEST_COUNTRY_NAME, code="ABC")
+        CountryResponse(id=TEST_COUNTRY_ID, name=TEST_COUNTRY_NAME, code="ABC")
     assert "1 validation error for CountryResponse" in str(ve.value)
     assert "code" in str(ve.value)
     with pytest.raises(ValidationError) as ve:
-        CountryResponse(name=TEST_COUNTRY_NAME, code="A")
+        CountryResponse(id=TEST_COUNTRY_ID, name=TEST_COUNTRY_NAME, code="A")
     assert "1 validation error for CountryResponse" in str(ve.value)
     assert "code" in str(ve.value)
 
 
 @pytest.mark.unit
 def test_country_response_works_with_valid_data():
-    response = CountryResponse(name=TEST_COUNTRY_NAME, code=TEST_COUNTRY_CODE)
+    response = CountryResponse(
+        id=TEST_COUNTRY_ID, name=TEST_COUNTRY_NAME, code=TEST_COUNTRY_CODE
+    )
+    assert response.id == TEST_COUNTRY_ID
     assert response.name == TEST_COUNTRY_NAME
     assert response.code == TEST_COUNTRY_CODE
 
@@ -50,7 +58,7 @@ def test_countries_response_validation_error_on_invalid_data():
 @pytest.mark.unit
 def test_countries_response_works_with_valid_data():
     country_response = CountryResponse(
-        name=TEST_COUNTRY_NAME, code=TEST_COUNTRY_CODE
+        id=TEST_COUNTRY_ID, name=TEST_COUNTRY_NAME, code=TEST_COUNTRY_CODE
     )
     empty_response = CountriesResponse(count=0, values=[])
     assert empty_response.count == 0
