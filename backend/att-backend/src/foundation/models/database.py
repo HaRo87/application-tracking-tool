@@ -1,15 +1,25 @@
-from sqlalchemy import orm, Column, Date, Integer, String
-from sqlalchemy.sql import func
+from os import getenv
+from typing import Generator
 
-Base = orm.declarative_base()
+from sqlalchemy import create_engine, Engine
+from sqlalchemy.orm import sessionmaker, Session
+
+DEFAULT_DATABASE_URL = getenv(
+    "ATT_DB_URL", "postgresql+pg8000://docker:docker@127.0.0.1/docker"
+)
 
 
-class CountriesOrm(Base):
-    __tablename__ = "countries"
-    id = Column(
-        "id", Integer, primary_key=True, autoincrement=True, nullable=False
-    )
-    name = Column("name", String, nullable=False)
-    code = Column("code", String(2), nullable=False)
-    created_at = Column("created_at", Date, nullable=False, default=func.now())
-    removed_at = Column("removed_at", Date, nullable=True)
+def get_engine() -> Engine:
+    return create_engine(DEFAULT_DATABASE_URL)
+
+
+def get_sessionmaker(engine: Engine) -> sessionmaker[Session]:
+    return sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db() -> Generator[sessionmaker[Session], None, None]:
+    db = get_sessionmaker(get_engine())
+    try:
+        yield db
+    finally:
+        db.close_all()
