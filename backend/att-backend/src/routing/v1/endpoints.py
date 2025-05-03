@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.foundation import META_DATA
@@ -32,8 +32,21 @@ def get_meta():
     status_code=HTTPStatus.CREATED,
 )
 def create_country(country: CountryRequest, db: Session = Depends(get_db)):
-    db_country = CountriesOrm(name=country.name, code=country.code)
-    db.add(db_country)
-    db.commit()
-    db.refresh(db_country)
-    return db_country
+    db_country = (
+        db.query(CountriesOrm)
+        .filter(
+            (CountriesOrm.name == country.name)
+            & (CountriesOrm.code == country.code)
+        )
+        .first()
+    )
+    if db_country is None:
+        db_country = CountriesOrm(name=country.name, code=country.code)
+        db.add(db_country)
+        db.commit()
+        db.refresh(db_country)
+        return db_country
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT, detail="Country already exists"
+        )
