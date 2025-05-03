@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from unittest.mock import MagicMock, Mock, patch
 
 from src.foundation.schemas import CountryRequest
-from src.routing.v1.endpoints import create_country
+from src.routing.v1.endpoints import create_country, get_country
 
 
 @pytest.fixture
@@ -56,3 +56,32 @@ def test_create_country_fail(mock_db, mock_db_session, mock_v1_countries):
         create_country(country=country_data, db=mock_db_session)
     assert he.value.status_code == HTTPStatus.CONFLICT
     assert he.value.detail == "Country already exists"
+
+
+@pytest.mark.unit
+@patch("src.foundation.models.database.get_db", return_value=MagicMock())
+def test_get_country_success(mock_db, mock_db_session, mock_v1_countries):
+    mock_db.return_value.__enter__.return_value = mock_db_session
+    mock_db_session.query.return_value.filter.return_value.first.return_value = mock_v1_countries[
+        0
+    ]
+
+    country = get_country(id=mock_v1_countries[0].id, db=mock_db_session)
+
+    assert country.id == mock_v1_countries[0].id
+    assert country.name == mock_v1_countries[0].name
+    assert country.code == mock_v1_countries[0].code
+
+
+@pytest.mark.unit
+@patch("src.foundation.models.database.get_db", return_value=MagicMock())
+def test_get_country_fail(mock_db, mock_db_session):
+    mock_db.return_value.__enter__.return_value = mock_db_session
+    mock_db_session.query.return_value.filter.return_value.first.return_value = (
+        None
+    )
+
+    with pytest.raises(HTTPException) as he:
+        get_country(id=1, db=mock_db_session)
+    assert he.value.status_code == HTTPStatus.NOT_FOUND
+    assert he.value.detail == "Country does not exist"
